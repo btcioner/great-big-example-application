@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
 import { GameFacade } from '../../../core/store/game/game.facade';
-import { RoomConfig } from '../config/config';
+import { RoomConfig } from '../../../core/gateways/webrtc.gateway';
 
 import 'rxjs/add/operator/scan';
 import 'rxjs/add/observable/interval';

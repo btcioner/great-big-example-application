@@ -1,15 +1,17 @@
 /* tslint:disable:no-unused-variable */
 
 import { Component, Provider, ViewChild, NgZone } from '@angular/core';
-import { Gateway } from '../../../core/gateways/base.gateway';
-import { WebRTCGateway } from './gateways/webrtc.gateway';
+import { BaseGateway } from '../../../core/gateways/base.gateway';
+import { WebRTCGateway } from '../../../core/gateways/webrtc.gateway';
 import { WebSocketGateway, WebSocketGatewayConfig, WS_CONFIG } from '../../../core/gateways/websocket.gateway';
-import { WS_PORT, WS_SECURE, WS_HOST, GAME_TEXT } from '../config/config';
+import { GAME_TEXT } from '../config/config';
+import * as constants from '../../../app.constants';
 import { GameComponent } from '../shared/game/game.component';
+import { AppConfig } from '../../../app.config';
 import { AsyncService } from '../../../core/services/base.async-service';
 import { GameFacade } from '../../../core/store/game/game.facade';
 import { P2PGameFacade } from '../../../core/store/p2p-game/p2p-game.facade';
-import { GameServer } from '../services/game-server.async-service';
+import { RestfulServer } from '../../../core/services/restful-server.service';
 import { GameP2PService } from './services/game-p2p.async-service';
 
 import { Observable } from 'rxjs/Observable';
@@ -18,9 +20,9 @@ import 'rxjs/add/observable/interval';
 import 'rxjs/add/operator/take';
 
 const WSConfig: WebSocketGatewayConfig = {
-    port: WS_PORT,
-    secure: WS_SECURE,
-    host: WS_HOST
+    port: 5552,
+    secure: false,
+    host: 'localhost'
 };
 
 const providers: Provider[] = [
@@ -30,16 +32,16 @@ const providers: Provider[] = [
     // This way we're using both GameServer and
     // GameP2PService and so the user can send progress to both
     // the application server and the user she is connected with.
-    { provide: AsyncService, multi: true, useClass: GameServer },
+    { provide: AsyncService, multi: true, useClass: RestfulServer },
     { provide: AsyncService, multi: true, useClass: GameP2PService },
 
     // Without lazy-loading it doesn't matter where we declare
-    // the WebRTCGateway, Gateway and WS_CONFIG. However, notice that
+    // the WebRTCGateway, BaseGateway and WS_CONFIG. However, notice that
     // these provider are required by the GameP2PService
     // so they should be available in the part of the component tree where
     // we want to render the MultiPlayerComponent.
-    { provide: Gateway, useClass: WebRTCGateway },
-    { provide: WebRTCGateway, useExisting: Gateway },
+    { provide: BaseGateway, useClass: WebRTCGateway },
+    { provide: WebRTCGateway, useExisting: BaseGateway },
     { provide: WS_CONFIG, useValue: WSConfig },
 
     GameFacade,

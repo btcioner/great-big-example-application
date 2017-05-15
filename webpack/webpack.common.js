@@ -5,12 +5,17 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const StringReplacePlugin = require('string-replace-webpack-plugin');
 const AddAssetHtmlPlugin = require('add-asset-html-webpack-plugin');
 const WebpackNotifierPlugin = require('webpack-notifier');
+const core = require('@angular/core');
 const path = require('path');
 
 module.exports = function(options) {
     const DATAS = {
         VERSION: JSON.stringify(require("../package.json").version),
-        DEBUG_INFO_ENABLED: options.env === 'dev'
+        DEBUG_INFO_ENABLED: options.env === 'dev',
+        API_URL: new core.InjectionToken('restful-url'),
+        WS_SECURE: false,
+        WS_HOST: 'localhost',
+        WS_PORT: 5552
     };
     return {
         entry: {
